@@ -2,6 +2,13 @@ import re
 from urllib.parse import urlparse
 from typing import DefaultDict
 from bs4 import BeautifulSoup
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+=======
+>>>>>>> Stashed changes
+import json
+>>>>>>> Stashed changes
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -66,6 +73,8 @@ def extract_next_links(url, resp) -> list["urls"]:
     }
     websites_as_json.append(website_json)
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     # If the response code isn't in the 200s or there is no content return an empty list
     if resp.status < 200 or resp.status > 299 or resp.raw_response is None:
         return []
@@ -73,6 +82,20 @@ def extract_next_links(url, resp) -> list["urls"]:
     # TODO Check for robots.txt sitemaps
 
     # TODO Parse normal web pages and defragment URLs
+=======
+=======
+>>>>>>> Stashed changes
+    # Scan page for
+    html = resp.raw_response.content.decode('utf-8')
+    soup = BeautifulSoup(html, "html.parser")
+
+    print()
+    print(soup.title.text)
+    print()
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
     return hyperlinks
 
