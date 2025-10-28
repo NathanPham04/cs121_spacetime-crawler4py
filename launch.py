@@ -30,3 +30,6 @@ if __name__ == "__main__":
     if debug == True:
         with open("websites.json", "w") as f:
             json.dump(scraper.websites_as_json, f, indent=4)
+
+        with open("out.txt", "w") as f:
+            json.dump(scraper.word_frequency_map, f, indent=4)
