@@ -2,13 +2,7 @@ import re
 from urllib.parse import urlparse
 from typing import DefaultDict
 from bs4 import BeautifulSoup
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
 import json
->>>>>>> Stashed changes
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -40,11 +34,14 @@ stopwords = {
 # Global word frequency map
 word_frequency_map = DefaultDict(int)
 
+# Longest page
+longest_page_url = None
+longest_page_len = 0
+
 # Keep a set of all the pages here so we can analyze subdomains later
 pages_set = set()
 
 # Website JSON for debugging
-global websites_as_json
 websites_as_json = []
 
 """
@@ -61,6 +58,27 @@ def extract_next_links(url, resp) -> list["urls"]:
     # resp.raw_response: this is where the page actually is. More specifically, the raw_response has two parts:
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
+    global websites_as_json, longest_page_len, longest_page_url
+
+    html = resp.raw_response.content.decode('utf-8')
+    soup = BeautifulSoup(html, "html.parser")
+
+    # Scan page text (for word frequency and longest page)
+    raw_text = soup.get_text()
+    words = raw_text.split()
+
+    page_len = len(words)
+    if page_len > longest_page_len or not longest_page_url:
+        longest_page_url = resp.url
+        longest_page_len = page_len
+
+    for raw_word in words:
+        word = raw_word.lower()
+        if word in stopwords:
+            continue
+
+        word_frequency_map[word]+= 1
+    
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     hyperlinks = []
     
@@ -69,12 +87,10 @@ def extract_next_links(url, resp) -> list["urls"]:
         "url": resp.url,
         "status": resp.status,
         "error": resp.error,
-        "raw_content": resp.raw_response.content.decode('utf-8')
+        "page_len": page_len,
     }
     websites_as_json.append(website_json)
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     # If the response code isn't in the 200s or there is no content return an empty list
     if resp.status < 200 or resp.status > 299 or resp.raw_response is None:
         return []
@@ -82,20 +98,6 @@ def extract_next_links(url, resp) -> list["urls"]:
     # TODO Check for robots.txt sitemaps
 
     # TODO Parse normal web pages and defragment URLs
-=======
-=======
->>>>>>> Stashed changes
-    # Scan page for
-    html = resp.raw_response.content.decode('utf-8')
-    soup = BeautifulSoup(html, "html.parser")
-
-    print()
-    print(soup.title.text)
-    print()
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
     return hyperlinks
 
