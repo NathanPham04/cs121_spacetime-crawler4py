@@ -1,0 +1,248 @@
+[
+    {
+        "url": "https://www.stat.uci.edu",
+        "status": 200,
+        "error": null,
+        "page_len": 267
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series/seminar-series-archive",
+        "status": 200,
+        "error": null,
+        "page_len": 192
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series/seminar-series-2010-2011",
+        "status": 200,
+        "error": null,
+        "page_len": 681
+    },
+    {
+        "url": "https://www.stat.uci.edu/ICS/statistics/research/seminarseries/2010-2011/index",
+        "status": 404,
+        "error": null,
+        "page_len": 1619
+    },
+    {
+        "url": "https://www.stat.uci.edu/ICS/statistics/research/seminarseries/2011-2012/index",
+        "status": 404,
+        "error": null,
+        "page_len": 1619
+    },
+    {
+        "url": "https://www.stat.uci.edu/ICS/statistics/research/seminarseries/2012-2013/index",
+        "status": 404,
+        "error": null,
+        "page_len": 1619
+    },
+    {
+        "url": "https://www.stat.uci.edu/ICS/statistics/research/seminarseries/2013-2014/index",
+        "status": 404,
+        "error": null,
+        "page_len": 1619
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series/seminar-series-2011-2012",
+        "status": 200,
+        "error": null,
+        "page_len": 480
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series/seminar-series-2012-2013",
+        "status": 200,
+        "error": null,
+        "page_len": 502
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series/seminar-series-2013-2014",
+        "status": 200,
+        "error": null,
+        "page_len": 636
+    },
+    {
+        "url": "http://www.stat.uci.edu/seminar-series/seminar-series-2014-2015",
+        "status": 200,
+        "error": null,
+        "page_len": 582
+    },
+    {
+        "url": "http://www.stat.uci.edu/seminar-series/seminar-series-2015-2016",
+        "status": 200,
+        "error": null,
+        "page_len": 547
+    },
+    {
+        "url": "http://www.stat.uci.edu/seminar-series/seminar-series-2016-2017",
+        "status": 200,
+        "error": null,
+        "page_len": 412
+    },
+    {
+        "url": "http://www.stat.uci.edu/seminar-series/seminar-series-2017-2018",
+        "status": 200,
+        "error": null,
+        "page_len": 808
+    },
+    {
+        "url": "http://www.stat.uci.edu/seminar-series/seminar-series-2018-2019",
+        "status": 200,
+        "error": null,
+        "page_len": 464
+    },
+    {
+        "url": "http://www.stat.uci.edu/wp-content/uploads/JuliaPalaciosAbstract6-6-19",
+        "status": 200,
+        "error": null,
+        "page_len": 11
+    },
+    {
+        "url": "http://www.stat.uci.edu/wp-content/uploads/TianZhengAbstract5-30-19",
+        "status": 200,
+        "error": null,
+        "page_len": 11
+    },
+    {
+        "url": "http://www.stat.uci.edu/wp-content/uploads/StephanMandtAbstract5-16-19",
+        "status": 200,
+        "error": null,
+        "page_len": 11
+    },
+    {
+        "url": "http://www.stat.uci.edu/wp-content/uploads/LorinCrawfordAbstract5-2-19",
+        "status": 200,
+        "error": null,
+        "page_len": 24
+    },
+    {
+        "url": "http://www.stat.uci.edu/wp-content/uploads/XinTongAbstract4-25-19",
+        "status": 200,
+        "error": null,
+        "page_len": 11
+    },
+    {
+        "url": "http://www.stat.uci.edu/seminar-series/seminar-series-2019-2020",
+        "status": 200,
+        "error": null,
+        "page_len": 473
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series-2020-2021",
+        "status": 200,
+        "error": null,
+        "page_len": 796
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series-2010-2011",
+        "status": 200,
+        "error": null,
+        "page_len": 681
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series-2011-2012",
+        "status": 200,
+        "error": null,
+        "page_len": 480
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series-2012-2013",
+        "status": 200,
+        "error": null,
+        "page_len": 502
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series-2013-2014",
+        "status": 200,
+        "error": null,
+        "page_len": 636
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series-2021-2022",
+        "status": 200,
+        "error": null,
+        "page_len": 745
+    },
+    {
+        "url": "https://www.stat.uci.edu/wp-content/uploads/Shujie-Ma-Abstract-5-5-22",
+        "status": 200,
+        "error": null,
+        "page_len": 11
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series-2022-2023",
+        "status": 200,
+        "error": null,
+        "page_len": 558
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series/seminar-series-2023-2024",
+        "status": 200,
+        "error": null,
+        "page_len": 632
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series/seminar-series-2024-2025",
+        "status": 200,
+        "error": null,
+        "page_len": 707
+    },
+    {
+        "url": "https://www.stat.uci.edu/seminar-series/seminar-series-2025-2026",
+        "status": 200,
+        "error": null,
+        "page_len": 210
+    },
+    {
+        "url": "https://ics.uci.edu/event/uc-irvine-statistics-state-of-the-department-2025",
+        "status": 200,
+        "error": null,
+        "page_len": 639
+    },
+    {
+        "url": "https://ics.uci.edu/accessibility-statement",
+        "status": 200,
+        "error": null,
+        "page_len": 770
+    },
+    {
+        "url": "https://ics.uci.edu/faculty-staff-positions",
+        "status": 200,
+        "error": null,
+        "page_len": 592
+    },
+    {
+        "url": "https://ics.uci.edu/staff-positions",
+        "status": 200,
+        "error": null,
+        "page_len": 759
+    },
+    {
+        "url": "https://ics.uci.edu/academic-recruitment",
+        "status": 200,
+        "error": null,
+        "page_len": 889
+    },
+    {
+        "url": "https://ics.uci.edu/faculty-staff-resources",
+        "status": 200,
+        "error": null,
+        "page_len": 655
+    },
+    {
+        "url": "https://cs.uci.edu/events/seminar-series",
+        "status": 200,
+        "error": null,
+        "page_len": 298
+    },
+    {
+        "url": "https://cs.ics.uci.edu/seminar-series-archive",
+        "status": 200,
+        "error": null,
+        "page_len": 223
+    },
+    {
+        "url": "https://cs.ics.uci.edu/accessibility-statement",
+        "status": 404,
+        "error": null,
+        "page_len": 251
+    }
+]

@@ -1,8 +1,9 @@
+debug = False
+
 import re
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin, urldefrag
 from typing import DefaultDict
 from bs4 import BeautifulSoup
-import json
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -61,9 +62,7 @@ def extract_next_links(url, resp) -> list["urls"]:
     global websites_as_json, longest_page_len, longest_page_url
 
     # -------------------------------Getting Page Word Statistics-----------------------------------------
-
-    html = resp.raw_response.content.decode('utf-8')
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(resp.raw_response.content, "lxml")
 
     # Scan page text (for word frequency and longest page)
     raw_text = soup.get_text()
@@ -101,40 +100,38 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     # TODO Check for robots.txt sitemaps
 
-    soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
-
     # Extract anchor tags with the href attribute
     for link in soup.find_all('a', href=True):
         # Defragment the URL by splitting at the '#' and taking everything to the front of it
-        curr_link = link.get('href').split('#')
+        curr_link = link.get('href').strip()
 
-        # If the first part of the split isn't empty then it is a valid URL path
-        if curr_link[0] == '':
+        # Skip unwanted link types
+        if (
+            curr_link.startswith("mailto:") or
+            curr_link.startswith("javascript:") or
+            curr_link.startswith("#") or
+            curr_link.startswith("tel:")
+        ):
             continue
 
-        # Fix relative links to absolute links
-        if curr_link[0].startswith('/') and not curr_link[0].startswith('//'):
-            i = 0
-            curr_link[0] = url + curr_link[0]
-
-        # Fix protocol-relative URLs
-        if curr_link[0].startswith('//'):
-            curr_link[0] = 'https:' + curr_link[0]
-
-        # If the first part of the split isn't valid then skip it
-        if not is_valid(curr_link[0]):
-            continue
+        # Convert relative and protocol-relative URLs to absolute URLs
+        full_url = urljoin(resp.url, curr_link)
 
         # Remove trailing slash for consistency in URL storage
-        if curr_link[0].endswith('/'):
-            curr_link[0] = curr_link[0][:-1]
+        if full_url.endswith('/'):
+            full_url = full_url[:-1]
 
         # TODO handle get requests with parameters?
 
-        # print(curr_link[0])
-        # print(link.get('href'))
+        # Only add unique new pages
+        if full_url not in pages_seen_set:
+            pages_seen_set.add(full_url)
+            hyperlinks.append(full_url)
 
-        hyperlinks.append(curr_link[0])
+            if debug == True:        
+                print(full_url)
+                print(link.get('href'))
+
 
     return hyperlinks
 
