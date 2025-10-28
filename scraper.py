@@ -1,5 +1,6 @@
 import re
 from urllib.parse import urlparse
+from typing import DefaultDict
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -29,7 +30,7 @@ stopwords = {
 }
 
 # Global word frequency map
-word_frequency_map = dict()
+word_frequency_map = DefaultDict(str, int)
 
 # Keep a set of all the pages here so we can analyze subdomains later
 pages_set = set()
@@ -39,7 +40,8 @@ pages_set = set()
 - Use BeautifulSoup to extract links and content
 - Save URLs and web page content to disk for parsing in report
 """
-def extract_next_links(url, resp):
+def extract_next_links(url, resp) -> list["urls"]:
+    global word_frequency_map
     # Implementation required.
     # url: the URL that was used to get the page
     # resp.url: the actual url of the page
@@ -49,13 +51,27 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    return list()
+
+    words = resp.raw_response.content.split()
+
+    hyperlinks = []
+
+    for word in words:
+        # checks valid url
+        if is_valid(word):
+            hyperlinks.append(word)
+        else:
+            processed_word = word.lower()
+            if processed_word not in stopwords:
+                word_frequency_map[processed_word]+= 1
+        
+    return hyperlinks
 
 
 """
 - Only URLs that are within the domains and paths
 """
-def is_valid(url):
+def is_valid(url):  # @ aidan
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
