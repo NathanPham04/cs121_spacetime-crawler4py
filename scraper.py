@@ -62,6 +62,23 @@ def extract_next_links(url, resp) -> list["urls"]:
     global websites_as_json, longest_page_len, longest_page_url
 
     # -------------------------------Getting Page Word Statistics-----------------------------------------
+    
+    # Used to store the website data for report in a JSON format
+    website_json = {
+        "url": resp.url,
+        "status": resp.status,
+        "error": resp.error,
+        "page_len": None,
+    }
+    websites_as_json.append(website_json)
+
+    # If the response code isn't in the 200s or there is no content return an empty list
+    if resp.status < 200 or resp.status > 299 or resp.raw_response is None:
+        return []
+
+    # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
+    hyperlinks = []
+
     soup = BeautifulSoup(resp.raw_response.content, "lxml")
 
     # Scan page text (for word frequency and longest page)
@@ -69,6 +86,9 @@ def extract_next_links(url, resp) -> list["urls"]:
     words = re.split(r'[ \t\n,.!?;:"(){}\[\]<>/\-&*\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text)
 
     page_len = len(words)
+    website_json["page_len"] = page_len
+
+    # Check for longest page
     if page_len > longest_page_len or not longest_page_url:
         longest_page_url = resp.url
         longest_page_len = page_len
@@ -79,24 +99,8 @@ def extract_next_links(url, resp) -> list["urls"]:
             continue
 
         word_frequency_map[word]+= 1
-    
-    # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    hyperlinks = []
-    
-    # Used to store the website data for report in a JSON format
-    website_json = {
-        "url": resp.url,
-        "status": resp.status,
-        "error": resp.error,
-        "page_len": page_len,
-    }
-    websites_as_json.append(website_json)
 
      # -------------------------------Parse normal web pages and defragment URLs-----------------------------------------
-
-    # If the response code isn't in the 200s or there is no content return an empty list
-    if resp.status < 200 or resp.status > 299 or resp.raw_response is None:
-        return []
 
     # TODO Check for robots.txt sitemaps
 
