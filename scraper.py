@@ -1,6 +1,7 @@
 import re
 from urllib.parse import urlparse
 from typing import DefaultDict
+import json
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -35,13 +36,16 @@ word_frequency_map = DefaultDict(int)
 # Keep a set of all the pages here so we can analyze subdomains later
 pages_set = set()
 
+# Website JSON for debugging
+global websites_as_json
+websites_as_json = []
+
 """
 - Make sure to defragment the URLs
 - Use BeautifulSoup to extract links and content
 - Save URLs and web page content to disk for parsing in report
 """
 def extract_next_links(url, resp) -> list["urls"]:
-    global word_frequency_map
     # Implementation required.
     # url: the URL that was used to get the page
     # resp.url: the actual url of the page
@@ -51,20 +55,18 @@ def extract_next_links(url, resp) -> list["urls"]:
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-
-    words = resp.raw_response.content.split()
-
     hyperlinks = []
+    
 
-    for word in words:
-        # checks valid url
-        if is_valid(word):
-            hyperlinks.append(word)
-        else:
-            processed_word = word.lower()
-            if processed_word not in stopwords:
-                word_frequency_map[processed_word]+= 1
-        
+    # Used to store the website data for report
+    website_json = {
+        "url": resp.url,
+        "status": resp.status,
+        "error": resp.error,
+        "content": resp.raw_response.content.decode('utf-8')
+    }
+    websites_as_json.append(website_json)
+
     return hyperlinks
 
 
