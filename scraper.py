@@ -66,7 +66,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     # Scan page text (for word frequency and longest page)
     raw_text = soup.get_text()
-    words = raw_text.split()
+    words = re.split(r'[ \t\n,.!?;:"(){}\[\]<>/\-&*\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text)
 
     page_len = len(words)
     if page_len > longest_page_len or not longest_page_url:
@@ -75,7 +75,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     for raw_word in words:
         word = raw_word.lower()
-        if word in stopwords:
+        if not word or word in stopwords:
             continue
 
         word_frequency_map[word]+= 1
