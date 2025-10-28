@@ -5,6 +5,10 @@ from utils.server_registration import get_cache_server
 from utils.config import Config
 from crawler import Crawler
 
+# For debugging and report purposes
+import json
+import scraper
+
 
 def main(config_file, restart):
     cparser = ConfigParser()
@@ -21,3 +25,8 @@ if __name__ == "__main__":
     parser.add_argument("--config_file", type=str, default="config.ini")
     args = parser.parse_args()
     main(args.config_file, args.restart)
+    
+    debug = True
+    if debug == True:
+        with open("websites.json", "w") as f:
+            json.dump(scraper.websites_as_json, f, indent=4)
