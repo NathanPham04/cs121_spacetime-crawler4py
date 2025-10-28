@@ -30,7 +30,7 @@ stopwords = {
 }
 
 # Global word frequency map
-word_frequency_map = DefaultDict(str, int)
+word_frequency_map = DefaultDict(int)
 
 # Keep a set of all the pages here so we can analyze subdomains later
 pages_set = set()
@@ -71,7 +71,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 """
 - Only URLs that are within the domains and paths
 """
-def is_valid(url):  # @ aidan
+def is_valid(url): 
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
@@ -79,6 +79,9 @@ def is_valid(url):  # @ aidan
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
+        if not re.match(r"^https?:\/\/(?:[\w.-]+\.)?(?:ics\.uci\.edu|cs\.uci\.edu|informatics\.uci\.edu|stat\.uci\.edu)(?:\/.*)?$", url):  # if the link is not in the list of valid hostnames
+            return False
+
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -94,9 +97,14 @@ def is_valid(url):  # @ aidan
         raise
 
 
+if __name__ == "__main__":
+    print(is_valid("hello"))
+    print(is_valid("https://ics.uci.edu/some/other/path#pleasework"))
+
+
 """
 Things to remember
-- Only crawl the following domains:
+- Only crawl the following domains:  # Done I think
     - *.ics.uci.edu/*
     - *.cs.uci.edu/*
     - *.informatics.uci.edu/*
