@@ -60,6 +60,8 @@ def extract_next_links(url, resp) -> list["urls"]:
     #         resp.raw_response.content: the content of the page!
     global websites_as_json, longest_page_len, longest_page_url
 
+    # -------------------------------Getting Page Word Statistics-----------------------------------------
+
     html = resp.raw_response.content.decode('utf-8')
     soup = BeautifulSoup(html, "html.parser")
 
@@ -91,13 +93,14 @@ def extract_next_links(url, resp) -> list["urls"]:
     }
     websites_as_json.append(website_json)
 
+     # -------------------------------Parse normal web pages and defragment URLs-----------------------------------------
+
     # If the response code isn't in the 200s or there is no content return an empty list
     if resp.status < 200 or resp.status > 299 or resp.raw_response is None:
         return []
 
     # TODO Check for robots.txt sitemaps
 
-    # Parse normal web pages and defragment URLs
     soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
 
     # Extract anchor tags with the href attribute
