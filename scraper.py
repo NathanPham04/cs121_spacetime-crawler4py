@@ -34,7 +34,7 @@ stopwords = {
 word_frequency_map = DefaultDict(int)
 
 # Keep a set of all the pages here so we can analyze subdomains later
-pages_set = set()
+pages_seen_set = set()
 
 # Website JSON for debugging
 global websites_as_json
@@ -72,7 +72,41 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     # TODO Check for robots.txt sitemaps
 
-    # TODO Parse normal web pages and defragment URLs
+    # Parse normal web pages and defragment URLs
+    soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
+
+    # Extract anchor tags with the href attribute
+    for link in soup.find_all('a', href=True):
+        # Defragment the URL by splitting at the '#' and taking everything to the front of it
+        curr_link = link.get('href').split('#')
+
+        # If the first part of the split isn't empty then it is a valid URL path
+        if curr_link[0] == '':
+            continue
+
+        # Fix relative links to absolute links
+        if curr_link[0].startswith('/') and not curr_link[0].startswith('//'):
+            i = 0
+            curr_link[0] = url + curr_link[0]
+
+        # Fix protocol-relative URLs
+        if curr_link[0].startswith('//'):
+            curr_link[0] = 'https:' + curr_link[0]
+
+        # If the first part of the split isn't valid then skip it
+        if not is_valid(curr_link[0]):
+            continue
+
+        # Remove trailing slash for consistency in URL storage
+        if curr_link[0].endswith('/'):
+            curr_link[0] = curr_link[0][:-1]
+
+        # TODO handle get requests with parameters?
+
+        # print(curr_link[0])
+        # print(link.get('href'))
+
+        hyperlinks.append(curr_link[0])
 
     return hyperlinks
 
