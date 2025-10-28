@@ -1,7 +1,7 @@
 import re
 from urllib.parse import urlparse
 from typing import DefaultDict
-import json
+from bs4 import BeautifulSoup
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -57,15 +57,22 @@ def extract_next_links(url, resp) -> list["urls"]:
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     hyperlinks = []
     
-
-    # Used to store the website data for report
+    # Used to store the website data for report in a JSON format
     website_json = {
         "url": resp.url,
         "status": resp.status,
         "error": resp.error,
-        "content": resp.raw_response.content.decode('utf-8')
+        "raw_content": resp.raw_response.content.decode('utf-8')
     }
     websites_as_json.append(website_json)
+
+    # If the response code isn't in the 200s or there is no content return an empty list
+    if resp.status < 200 or resp.status > 299 or resp.raw_response is None:
+        return []
+
+    # TODO Check for robots.txt sitemaps
+
+    # TODO Parse normal web pages and defragment URLs
 
     return hyperlinks
 
