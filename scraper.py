@@ -109,7 +109,6 @@ def extract_next_links(url, resp) -> list["urls"]:
 
         word_frequency_map[word]+= 1
 
-
     # -------------------------------Parse normal web pages and defragment URLs-----------------------------------------
 
     # TODO Check for robots.txt sitemaps
@@ -131,21 +130,23 @@ def extract_next_links(url, resp) -> list["urls"]:
         # Convert relative and protocol-relative URLs to absolute URLs
         full_url = urljoin(resp.url, curr_link)
 
+        # Remove fragments
+        full_url, _ = urldefrag(full_url)
+
         # Remove trailing slash for consistency in URL storage
         if full_url.endswith('/'):
             full_url = full_url[:-1]
 
         # TODO handle get requests with parameters?
 
+        # If not is_valid then skip
+        if not is_valid(full_url):
+            continue
+
         # Only add unique new pages
         if full_url not in pages_seen_set:
             pages_seen_set.add(full_url)
             hyperlinks.append(full_url)
-
-            if debug == True:        
-                print(full_url)
-                print(link.get('href'))
-
 
     return hyperlinks
 

@@ -76,5 +76,29 @@
         "status": 200,
         "error": null,
         "page_len": 413
+    },
+    {
+        "url": "http://www.stat.uci.edu/seminar-series/seminar-series-2017-2018",
+        "status": 200,
+        "error": null,
+        "page_len": 826
+    },
+    {
+        "url": "http://www.stat.uci.edu/seminar-series/seminar-series-2018-2019",
+        "status": 200,
+        "error": null,
+        "page_len": 489
+    },
+    {
+        "url": "http://www.stat.uci.edu/wp-content/uploads/JuliaPalaciosAbstract6-6-19",
+        "status": 200,
+        "error": null,
+        "page_len": 15
+    },
+    {
+        "url": "http://www.stat.uci.edu/wp-content/uploads/TianZhengAbstract5-30-19",
+        "status": 200,
+        "error": null,
+        "page_len": 15
     }
 ]
