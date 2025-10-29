@@ -32,6 +32,11 @@ stopwords = {
     "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves"
 }
 
+# URLs to avoid when crawling
+skip_urls = {
+    "https://wiki.ics.uci.edu/doku.php/commands:screen"
+}
+
 # Global word frequency map
 word_frequency_map = DefaultDict(int)
 
@@ -61,8 +66,8 @@ def extract_next_links(url, resp) -> list["urls"]:
     #         resp.raw_response.content: the content of the page!
     global websites_as_json, longest_page_len, longest_page_url
 
-    # -------------------------------Getting Page Word Statistics-----------------------------------------
-    
+    # -------------------------------Preprocessing Metadata Checks-----------------------------------------
+
     # Used to store the website data for report in a JSON format
     website_json = {
         "url": resp.url,
@@ -70,12 +75,14 @@ def extract_next_links(url, resp) -> list["urls"]:
         "error": resp.error,
     }
 
-
     # If the response code isn't in the 200s or there is no content return an empty list
     if resp.status < 200 or resp.status > 299 or resp.raw_response is None:
         website_json["raw_content"] = resp.raw_response.content.decode('utf-8', errors='ignore') if resp.raw_response else None
         websites_as_json.append(website_json)
         return []
+
+
+    # -------------------------------Getting Page Word Statistics-----------------------------------------
 
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     hyperlinks = []
@@ -150,6 +157,12 @@ def is_valid(url):
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
+    
+    # Check URLs to skip
+    for url in skip_urls:
+        if resp.url.startswith(url):
+            return False
+    
     try:
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
