@@ -68,6 +68,8 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     # -------------------------------Preprocessing Metadata Checks-----------------------------------------
 
+    pages_seen_set.add(resp.url)
+
     # Used to store the website data for report in a JSON format
     website_json = {
         "url": resp.url,
@@ -139,14 +141,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 
         # TODO handle get requests with parameters?
 
-        # If not is_valid then skip
-        if not is_valid(full_url):
-            continue
-
-        # Only add unique new pages
-        if full_url not in pages_seen_set:
-            pages_seen_set.add(full_url)
-            hyperlinks.append(full_url)
+        hyperlinks.append(full_url)
 
     return hyperlinks
 
@@ -164,11 +159,16 @@ def is_valid(url):
         if url.startswith(skip_url):
             return False
     
+    # Check seen URLs to not crawl again
+    if url in pages_seen_set:
+        return False
+
     try:
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
-        if not re.match(r"^https?:\/\/(?:[\w.-]+\.)?(?:ics\.uci\.edu|cs\.uci\.edu|informatics\.uci\.edu|stat\.uci\.edu)(?:\/.*)?$", url):  # if the link is not in the list of valid hostnames
+        # Check if the link is not in the list of valid hostnames
+        if not re.match(r"^https?:\/\/(?:[\w.-]+\.)?(?:ics\.uci\.edu|cs\.uci\.edu|informatics\.uci\.edu|stat\.uci\.edu)(?:\/.*)?$", url):
             return False
 
         return not re.match(
