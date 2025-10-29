@@ -24,12 +24,14 @@ if __name__ == "__main__":
     parser.add_argument("--restart", action="store_true", default=False)
     parser.add_argument("--config_file", type=str, default="config.ini")
     args = parser.parse_args()
-    main(args.config_file, args.restart)
-    
     debug = True
-    if debug == True:
-        with open("websites.json", "w") as f:
-            json.dump(scraper.websites_as_json, f, indent=4)
-
-        with open("out.txt", "w") as f:
-            json.dump(scraper.word_frequency_map, f, indent=4)
+    try:
+        main(args.config_file, args.restart)
+    except:
+        if debug == True:
+            with open("websites.json", "w") as f:
+                json.dump(scraper.websites_as_json, f, indent=4)
+    else:
+        if debug == True:
+            with open("websites.json", "w") as f:
+                json.dump(scraper.websites_as_json, f, indent=4)
