@@ -34,7 +34,8 @@ stopwords = {
 
 # URLs to avoid when crawling
 skip_urls = {
-    "https://wiki.ics.uci.edu/doku.php/commands:screen"
+    "https://wiki.ics.uci.edu/doku.php/commands:screen",
+    "https://cs.ics.uci.edu/accessibility-statement"
 }
 
 # Global word frequency map
@@ -66,9 +67,13 @@ def extract_next_links(url, resp) -> list["urls"]:
     #         resp.raw_response.content: the content of the page!
     global websites_as_json, longest_page_len, longest_page_url
 
+    # Add to the seen set if we haven't parsed the page yet
+    if resp.url in pages_seen_set:
+        return []
+    else:
+        pages_seen_set.add(resp.url)    
+    
     # -------------------------------Preprocessing Metadata Checks-----------------------------------------
-
-    pages_seen_set.add(resp.url)
 
     # Used to store the website data for report in a JSON format
     website_json = {
@@ -112,8 +117,6 @@ def extract_next_links(url, resp) -> list["urls"]:
         word_frequency_map[word]+= 1
 
     # -------------------------------Parse normal web pages and defragment URLs-----------------------------------------
-
-    # TODO Check for robots.txt sitemaps
 
     # Extract anchor tags with the href attribute
     for link in soup.find_all('a', href=True):
@@ -167,8 +170,27 @@ def is_valid(url):
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
+        
         # Check if the link is not in the list of valid hostnames
         if not re.match(r"^https?:\/\/(?:[\w.-]+\.)?(?:ics\.uci\.edu|cs\.uci\.edu|informatics\.uci\.edu|stat\.uci\.edu)(?:\/.*)?$", url):
+            return False
+
+        # Don't allow the content-uploads from this specific route that aren't parsable
+        if re.match(
+            r"^https?:\/\/www\.stat\.uci\.edu\/wp-content\/uploads\/[A-Za-z\-]+-?Abstract-?\d{1,2}-\d{1,2}-(?:\d{2}|\d{4})",
+            url
+        ):
+            return False
+        
+        # Don't allow these 404 sites that have no information
+        if re.match(
+            r"^https?:\/\/www\.stat\.uci\.edu\/ICS\/statistics\/research\/seminarseries\/\d{4}-\d{4}\/index$",
+            url
+        ):
+            return False
+        
+        # Don't allow urls with ical={number} since those are download links for an ics calender
+        if re.search(r"[?&]ical=\d+", url):
             return False
 
         return not re.match(
