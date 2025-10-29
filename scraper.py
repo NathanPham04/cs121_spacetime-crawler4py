@@ -160,8 +160,8 @@ def is_valid(url):
     # There are already some conditions that return False.
     
     # Check URLs to skip
-    for url in skip_urls:
-        if resp.url.startswith(url):
+    for skip_url in skip_urls:
+        if url.startswith(skip_url):
             return False
     
     try:
