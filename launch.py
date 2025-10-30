@@ -35,3 +35,20 @@ if __name__ == "__main__":
         if debug == True:
             with open("websites.json", "w") as f:
                 json.dump(scraper.websites_as_json, f, indent=4)
+
+    # Crawler Statistics
+    word_frequencies = [(freq, word) for word, freq in scraper.word_frequency_map.items()]
+    top_freq_words = sorted(word_frequencies, reverse=True)[:50]
+    top_words = [(word, freq) for freq, word in top_freq_words]
+    all_subdomains = sorted(scraper.subdomain_counts.keys())
+    subdomain_counts = [(subdomain, scraper.subdomain_counts[subdomain]) for subdomain in all_subdomains]
+
+
+    with open("stats.txt", "w") as f:
+        f.write("-------------------Crawler Statistics-------------------\n")
+        f.write("Total pages: " + str(len(scraper.pages_seen_set)) + "\n")
+        f.write("Longest page: " + scraper.longest_page_url + " (" + str(scraper.longest_page_len) + " words)\n")
+        f.write("Most common words: " + str(top_words) + "\n")
+        f.write("Subdomains:\n")
+        for subdomain, count in subdomain_counts:
+            f.write("\t" + subdomain + ", " + str(count) + "\n")

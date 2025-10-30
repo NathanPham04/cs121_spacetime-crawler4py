@@ -65,6 +65,9 @@ longest_page_len = 0
 # Keep a set of all the pages here so we can analyze subdomains later
 pages_seen_set = set()
 
+# Subdomains counts
+subdomain_counts = DefaultDict(int)
+
 # Website JSON for debugging
 websites_as_json = []
 
@@ -130,8 +133,11 @@ def extract_next_links(url, resp) -> list["urls"]:
         word = raw_word.lower()
         if not word or word in stopwords:
             continue
-
         word_frequency_map[word]+= 1
+
+    # Update subdomain count
+    subdomain = urlparse(resp.url).hostname
+    subdomain_counts[subdomain]+= 1
 
     # -------------------------------Parse normal web pages and defragment URLs-----------------------------------------
 
