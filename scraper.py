@@ -73,6 +73,10 @@ subdomain_counts = DefaultDict(int)
 # Website JSON for debugging
 websites_as_json = []
 
+# Set of all hashed page contents visited
+hashed_content = set()
+num_duplicate_pages = 0
+
 """
 - Make sure to defragment the URLs
 - Use BeautifulSoup to extract links and content
@@ -87,13 +91,27 @@ def extract_next_links(url, resp) -> list["urls"]:
     # resp.raw_response: this is where the page actually is. More specifically, the raw_response has two parts:
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
-    global websites_as_json, longest_page_len, longest_page_url
+    global websites_as_json, longest_page_len, longest_page_url, num_duplicate_pages
+
+    # -------------------------------URL Tracking and Duplicate Detection-----------------------------------------
 
     # Add to the seen set if we haven't parsed the page yet
     if resp.url in pages_seen_set:
         return []
     else:
-        pages_seen_set.add(resp.url)    
+        pages_seen_set.add(resp.url)
+
+    # Check for no-response page
+    if resp.raw_response is None:
+        return []
+
+    # Checking for duplicate sites
+    hashed_site = hash(resp.raw_response.content)
+    if hashed_site in hashed_content:
+        num_duplicate_pages+= 1
+        return []
+    
+    hashed_content.add(hashed_site)
     
     # -------------------------------Preprocessing Metadata Checks-----------------------------------------
 
@@ -105,8 +123,8 @@ def extract_next_links(url, resp) -> list["urls"]:
     }
 
     # If the response code isn't in the 200s or there is no content return an empty list
-    if resp.status < 200 or resp.status > 299 or resp.raw_response is None:
-        website_json["raw_content"] = resp.raw_response.content.decode('utf-8', errors='ignore') if resp.raw_response else None
+    if resp.status < 200 or resp.status > 299:
+        website_json["raw_content"] = resp.raw_response.content.decode('utf-8', errors='ignore')
         websites_as_json.append(website_json)
         return []
 

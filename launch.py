@@ -52,3 +52,7 @@ if __name__ == "__main__":
         f.write("Subdomains:\n")
         for subdomain, count in subdomain_counts:
             f.write("\t" + subdomain + ", " + str(count) + "\n")
+        
+        f.write("\n\n\n")
+        f.write("--------Additional Statistics-------------------\n")
+        f.write("Duplicate pages skipped: " + str(scraper.num_duplicate_pages) + "\n")
