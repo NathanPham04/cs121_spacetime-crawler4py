@@ -118,7 +118,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     # Scan page text (for word frequency and longest page)
     raw_text = soup.get_text()
-    words = re.split(r'[ \t\n,.!?;:"(){}\[\]<>/\-&*\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text)
+    words = re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text)
 
     page_len = len(words)
     website_json["page_len"] = page_len
