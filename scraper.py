@@ -45,6 +45,10 @@ skip_urls = {
     "https://grape.ics.uci.edu/wiki/asterix", # Download links
     "https://ics.uci.edu/events/category/student-experience/day", # Calendar trap
     "https://ics.uci.edu/events/category/student-experience/list/?tribe-bar-date", # Calendar trap
+    "https://grape.ics.uci.edu/wiki/public/zip-attachment", # Attachment download
+    "https://grape.ics.uci.edu/wiki/public/raw-attachment", # Attachment download
+    "https://isg.ics.uci.edu/events/tag/talk", # Calendar trap
+    "https://ngs.ics.uci.edu/wp-login.php", # Word-press login page is useless
 }
 
 # Global word frequency map
@@ -210,8 +214,13 @@ def is_valid(url):
             return False
         
         # Don't allow pictures from eppstein's page since they are useless photos with descriptions
-        if re.match(r"^https?:\/\/ics\.uci\.edu\/~eppstein\/pix\/?$", url):
+        if re.match(r"^https?:\/\/(?:www\.)?ics\.uci\.edu\/~eppstein\/pix(?:\/.*)?$", url):
             return False
+        
+        # Don't allow the get request download links with format=txt
+        if re.search(r"[?&]format=txt", url):
+            return False
+
 
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
@@ -222,7 +231,7 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz"
-            + r"|mpg|py|h|cp)$", parsed.path.lower())
+            + r"|mpg|py|h|cp|c|emacs|ppsx|lif|rle)$", parsed.path.lower())
 
     except TypeError:
         print ("TypeError for ", parsed)
