@@ -44,8 +44,15 @@ skip_urls = {
     "https://ics.uci.edu/events/category/student-experience/list/?tribe-bar-date", # Calendar trap
     "https://grape.ics.uci.edu/wiki/public/zip-attachment", # Attachment download
     "https://grape.ics.uci.edu/wiki/public/raw-attachment", # Attachment download
-    "https://ngs.ics.uci.edu/wp-login.php", # Word-press login page is useless
     "https://isg.ics.uci.edu/events", # Calendar trap
+    "http://mlphysics.ics.uci.edu/data", # Scientific data in txt files
+    "http://wics.ics.uci.edu", # Crawler trap
+    "https://wics.ics.uci.edu", # Crawler trap
+    "https://grape.ics.uci.edu/wiki/public/wiki", # Crawler trap
+    "https://grape.ics.uci.edu/wiki/public/timeline?", # Crawler trap
+    "https://ngs.ics.uci.edu", # Crawler trap
+    "http://www.ics.uci.edu/~babaks/BWR/Home_files", # Useless pages
+    "https://ics.uci.edu/~dechter/publications", # Useless pages
 }
 
 # Global word frequency map
@@ -210,8 +217,8 @@ def is_valid(url):
         if "doku.php" in url:
             return False
 
-        # Don't allow ?tribe__ecp_custom since it is a calendar crawler trap
-        if "?tribe__ecp_custom" in url:
+        # Don't allow ?tribe since it is a calendar crawler trap
+        if "?tribe" in url:
             return False
         
         # Don't allow pictures from eppstein's page since they are useless photos with descriptions
@@ -222,6 +229,13 @@ def is_valid(url):
         if re.search(r"[?&]format=txt", url):
             return False
 
+        # Don't allow WordPress login pages
+        if "wp-login" in url:
+            return False
+        
+        # Disallow a bunch of slides from zivs website
+        if re.match(r"^https?://www\.ics\.uci\.edu/~ziv/.*\.htm$", url):
+            return False  # disallow
 
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
@@ -232,7 +246,7 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz"
-            + r"|mpg|py|h|cp|c|emacs|ppsx|lif|rle)$", parsed.path.lower())
+            + r"|mpg|py|h|cp|c|emacs|ppsx|lif|rle|nb|tsv|htm|odc|bib|pps)$", parsed.path.lower())
 
     except TypeError:
         print ("TypeError for ", parsed)
