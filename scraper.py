@@ -146,7 +146,11 @@ def extract_next_links(url, resp) -> list["urls"]:
             continue
 
         # Convert relative and protocol-relative URLs to absolute URLs
-        full_url = urljoin(resp.url, curr_link)
+        try:
+            full_url = urljoin(resp.url, curr_link)
+        # If there is an error just skip the URL
+        except:
+            continue
 
         # Remove fragments
         full_url, _ = urldefrag(full_url)
@@ -236,7 +240,9 @@ def is_valid(url):
     except TypeError:
         print ("TypeError for ", parsed)
         raise
-
+    except ValueError:
+        print("ValueError for ", parsed)
+        return False
 
 if __name__ == "__main__":
     print(is_valid("hello"))
