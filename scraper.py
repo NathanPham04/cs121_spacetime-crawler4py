@@ -34,7 +34,6 @@ stopwords = {
 
 # URLs to avoid when crawling
 skip_urls = {
-    "https://wiki.ics.uci.edu/doku.php", # Trap with a bunch of useless links
     "https://cs.ics.uci.edu/accessibility-statement", # Page not found
     "https://ics.uci.edu/vrst", # Page not found
     "https://ics.uci.edu/~rjuang", # Page not found
@@ -43,6 +42,10 @@ skip_urls = {
     "https://isg.ics.uci.edu/events/tag/talks/day", # Calendar trap
     "https://isg.ics.uci.edu/events/tag/talks/list", # Calendar trap
     "https://isg.ics.uci.edu/events/tag/talks", # Calendar trap
+    "https://grape.ics.uci.edu/wiki/asterix", # Download links
+    "https://ics.uci.edu/events/category/student-experience/day", # Calendar trap
+    "https://ics.uci.edu/events/category/student-experience/list/?tribe-bar-date", # Calendar trap
+
 }
 
 # Global word frequency map
@@ -199,6 +202,21 @@ def is_valid(url):
         
         # Don't allow urls with ical={number} since those are download links for an ics calender
         if re.search(r"[?&](?:ical|outlook-ical)=\d+", url):
+            return False
+
+        # Don't allow these helpdesk ticket get request pages that have no info
+        if re.match(
+            r"^https?:\/\/helpdesk\.ics\.uci\.edu\/Ticket\/Display\.html\?id=\d+$",
+            url
+        ): 
+            return False
+
+        # Don't allow urls with doku.php since it is a crawler trap with a bunch of useless no information pages
+        if "doku.php" in url:
+            return False
+
+        # Don't allow ?tribe__ecp_custom since it is a calendar crawler trap
+        if "?tribe__ecp_custom" in url:
             return False
 
         return not re.match(
