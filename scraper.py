@@ -29,7 +29,9 @@ stopwords = {
     "wasn't", "we", "we'd", "we'll", "we're", "we've", "were", "weren't", "what",
     "what's", "when", "when's", "where", "where's", "which", "while", "who",
     "who's", "whom", "why", "why's", "with", "won't", "would", "wouldn't", "you",
-    "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves"
+    "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves",
+    # Added stop words
+    "s", "d", "p", "b"
 }
 
 # URLs to avoid when crawling
@@ -131,7 +133,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     for raw_word in words:
         word = raw_word.lower()
-        if not word or word in stopwords:
+        if not word or word in stopwords or word.isdigit():
             continue
         word_frequency_map[word]+= 1
 
