@@ -35,7 +35,15 @@ stopwords = {
 # URLs to avoid when crawling
 skip_urls = {
     "https://wiki.ics.uci.edu/doku.php/commands:screen",
-    "https://cs.ics.uci.edu/accessibility-statement"
+    "https://cs.ics.uci.edu/accessibility-statement", # Page not found
+    "https://ics.uci.edu/vrst", # Page not found
+    "https://ics.uci.edu/~rjuang", # Page not found
+    "https://ics.uci.edu/~bsajadi", # Page not found
+    "https://isg.ics.uci.edu/wp-login.php", # Word-press login page is useless
+    "https://isg.ics.uci.edu/events/tag/talks/day", # Calendar trap
+    "https://isg.ics.uci.edu/events/tag/talks/list", # Calendar trap
+    "https://isg.ics.uci.edu/events/tag/talks", # Calendar trap
+    "https://wiki.ics.uci.edu/doku.php", # Trap
 }
 
 # Global word frequency map
@@ -146,6 +154,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 
         hyperlinks.append(full_url)
 
+
     return hyperlinks
 
 
@@ -190,7 +199,7 @@ def is_valid(url):
             return False
         
         # Don't allow urls with ical={number} since those are download links for an ics calender
-        if re.search(r"[?&]ical=\d+", url):
+        if re.search(r"[?&](?:ical|outlook-ical)=\d+", url):
             return False
 
         return not re.match(
@@ -201,7 +210,8 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz"
+            + r"|mpg)$", parsed.path.lower())
 
     except TypeError:
         print ("TypeError for ", parsed)
