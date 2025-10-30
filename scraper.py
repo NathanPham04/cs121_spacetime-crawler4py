@@ -34,7 +34,7 @@ stopwords = {
 
 # URLs to avoid when crawling
 skip_urls = {
-    "https://wiki.ics.uci.edu/doku.php/commands:screen",
+    "https://wiki.ics.uci.edu/doku.php", # Trap with a bunch of useless links
     "https://cs.ics.uci.edu/accessibility-statement", # Page not found
     "https://ics.uci.edu/vrst", # Page not found
     "https://ics.uci.edu/~rjuang", # Page not found
@@ -43,7 +43,6 @@ skip_urls = {
     "https://isg.ics.uci.edu/events/tag/talks/day", # Calendar trap
     "https://isg.ics.uci.edu/events/tag/talks/list", # Calendar trap
     "https://isg.ics.uci.edu/events/tag/talks", # Calendar trap
-    "https://wiki.ics.uci.edu/doku.php", # Trap
 }
 
 # Global word frequency map
