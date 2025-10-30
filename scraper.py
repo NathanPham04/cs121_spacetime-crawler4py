@@ -31,7 +31,7 @@ stopwords = {
     "who's", "whom", "why", "why's", "with", "won't", "would", "wouldn't", "you",
     "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves",
     # Added stop words
-    "s", "d", "p", "b"
+    "s", "d", "p", "b", "m"
 }
 
 # URLs to avoid when crawling
@@ -138,7 +138,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     # Scan page text (for word frequency and longest page)
     raw_text = soup.get_text()
-    words = re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text)
+    words = re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=»\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text)
 
     page_len = len(words)
     website_json["page_len"] = page_len
