@@ -39,16 +39,13 @@ skip_urls = {
     "https://ics.uci.edu/~rjuang", # Page not found
     "https://ics.uci.edu/~bsajadi", # Page not found
     "https://isg.ics.uci.edu/wp-login.php", # Word-press login page is useless
-    "https://isg.ics.uci.edu/events/tag/talks/day", # Calendar trap
-    "https://isg.ics.uci.edu/events/tag/talks/list", # Calendar trap
-    "https://isg.ics.uci.edu/events/tag/talks", # Calendar trap
     "https://grape.ics.uci.edu/wiki/asterix", # Download links
     "https://ics.uci.edu/events/category/student-experience/day", # Calendar trap
     "https://ics.uci.edu/events/category/student-experience/list/?tribe-bar-date", # Calendar trap
     "https://grape.ics.uci.edu/wiki/public/zip-attachment", # Attachment download
     "https://grape.ics.uci.edu/wiki/public/raw-attachment", # Attachment download
-    "https://isg.ics.uci.edu/events/tag/talk", # Calendar trap
     "https://ngs.ics.uci.edu/wp-login.php", # Word-press login page is useless
+    "https://isg.ics.uci.edu/events", # Calendar trap
 }
 
 # Global word frequency map
