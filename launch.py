@@ -55,7 +55,8 @@ if __name__ == "__main__":
         
         f.write("\n\n\n")
         f.write("--------Additional Statistics-------------------\n")
-        f.write("Duplicate pages skipped: " + str(scraper.num_duplicate_pages) + "\n")
+        f.write(f"Duplicate pages skipped: {scraper.num_duplicate_pages}")
+        f.write(f"Near duplicate pages skipped: {scraper.num_near_duplicate_pages}")
 
     with open("top_words.txt", "w") as f:
         f.write(str(top_words))
