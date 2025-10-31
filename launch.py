@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     # Crawler Statistics
     word_frequencies = [(freq, word) for word, freq in scraper.word_frequency_map.items()]
-    top_freq_words = sorted(word_frequencies, reverse=True)[:50]
+    top_freq_words = sorted(word_frequencies, reverse=True)
     top_words = [(word, freq) for freq, word in top_freq_words]
     all_subdomains = sorted(scraper.subdomain_counts.keys())
     subdomain_counts = [(subdomain, scraper.subdomain_counts[subdomain]) for subdomain in all_subdomains]
@@ -48,7 +48,7 @@ if __name__ == "__main__":
         f.write("-------------------Crawler Statistics-------------------\n")
         f.write("Total pages: " + str(len(scraper.pages_seen_set)) + "\n")
         f.write("Longest page: " + scraper.longest_page_url + " (" + str(scraper.longest_page_len) + " words)\n")
-        f.write("Most common words: " + str(top_words) + "\n")
+        f.write("Most common words: " + str(top_words[:50]) + "\n")
         f.write("Subdomains:\n")
         for subdomain, count in subdomain_counts:
             f.write("\t" + subdomain + ", " + str(count) + "\n")
@@ -56,3 +56,6 @@ if __name__ == "__main__":
         f.write("\n\n\n")
         f.write("--------Additional Statistics-------------------\n")
         f.write("Duplicate pages skipped: " + str(scraper.num_duplicate_pages) + "\n")
+
+    with open("top_words.txt", "w") as f:
+        f.write(str(top_words))
