@@ -70,6 +70,7 @@ websites_as_json = []
 
 # Set of all hashed page contents visited
 hashed_content = set()
+seen_ngram_sets = []
 num_duplicate_pages = 0
 
 MAX_FILE_SIZE_BYTES = 1_000_000 # 1 MB for an html web page file is pretty big according to Google (https://www.greennet.org.uk/support/understanding-file-sizes)
@@ -131,7 +132,8 @@ def extract_next_links(url, resp) -> list["urls"]:
     soup = BeautifulSoup(resp.raw_response.content, "lxml")
 
     raw_text = soup.get_text()
-    words = re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=»\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text)
+    # cast to lower
+    words = [w.lower() for w in re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=»\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text) if w]
 
     page_len = len(words)
 
@@ -147,8 +149,10 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     # --------------------------------Similar/Duplicate Page Check---------------------------------------------
 
-    # TODO RYAN/AIDAN/HANVISH?
-
+    if similar_to_seen(words):
+        num_duplicate_pages += 1
+        return []
+        
     # -------------------------------Getting Page Word Statistics-----------------------------------------
 
     website_json["page_len"] = page_len
@@ -206,6 +210,38 @@ def extract_next_links(url, resp) -> list["urls"]:
 
 
     return hyperlinks
+
+
+# Helper functions for text similarity
+def jaccard_similarity(set1, set2):
+        """
+        adapted from https://www.geeksforgeeks.org/data-science/how-to-calculate-jaccard-similarity-in-python/
+        """
+        union = set1.union(set2)
+        if not union:
+            return 0.0
+        intersection = set1.intersection(set2)
+        return len(intersection) / len(union)
+        
+# https://medium.com/data-science/text-analysis-basics-in-python-443282942ec5
+def similar_to_seen(text: list[str], threshold:int=0.85):
+    global hashed_content
+
+    # helper for making n-grams
+    def make_ngrams(word_list, n=3):
+        return set(" ".join(word_list[i:i+n]) for i in range(len(word_list) - n + 1))
+    
+    current_ngrams = make_ngrams(text)
+
+     # Compare against previously seen pages
+    for prior_ngrams in seen_ngram_sets:
+        similarity_score = jaccard_similarity(current_ngrams, prior_ngrams)
+        if similarity_score > threshold:  # similarity threshold
+            return True  
+
+    # otherwise, store this page’s n-gram set for future comparisons
+    seen_ngram_sets.append(current_ngrams)
+    return False
 
 
 """
@@ -291,10 +327,11 @@ def is_valid(url):
     except ValueError:
         print("ValueError for ", parsed)
         return False
-
+    
+    
 if __name__ == "__main__":
-    print(is_valid("hello"))
-    print(is_valid("https://ics.uci.edu/some/other/path#pleasework"))
+    pass
+
 
 
 """
