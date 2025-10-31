@@ -44,8 +44,8 @@ skip_urls = {
     "https://grape.ics.uci.edu/wiki/public/raw-attachment", # Attachment download
     "https://isg.ics.uci.edu/events", # Calendar trap
     "http://mlphysics.ics.uci.edu/data", # Scientific data in txt files (no real webpage information)
-    # "http://wics.ics.uci.edu", # Crawler trap
-    # "https://wics.ics.uci.edu", # Crawler trap
+    "http://wics.ics.uci.edu", # Crawler trap
+    "https://wics.ics.uci.edu", # Crawler trap
     "https://grape.ics.uci.edu/wiki/public/wiki", # Crawler trap (pages require login)
     "https://grape.ics.uci.edu/wiki/public/timeline?", # Crawler trap (pages require login)
     "https://ngs.ics.uci.edu", # Crawler trap (Bunch of links that take you to low information pages that don't seem to end)
@@ -140,9 +140,9 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     # --------------------------------Similar/Duplicate Page Check---------------------------------------------
 
-    # if similar_to_seen(words):
-    #     num_near_duplicate_pages += 1
-    #     return []
+    if similar_to_seen(words):
+        num_near_duplicate_pages += 1
+        return []
         
     # -------------------------------Getting Page Word Statistics-----------------------------------------
 
