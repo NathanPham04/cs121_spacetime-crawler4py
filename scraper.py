@@ -72,6 +72,7 @@ websites_as_json = []
 hashed_content = set()
 seen_ngram_sets = []
 num_duplicate_pages = 0
+num_near_duplicate_pages = 0
 
 MAX_FILE_SIZE_BYTES = 1_000_000 # 1 MB for an html web page file is pretty big according to Google (https://www.greennet.org.uk/support/understanding-file-sizes)
 
@@ -150,7 +151,7 @@ def extract_next_links(url, resp) -> list["urls"]:
     # --------------------------------Similar/Duplicate Page Check---------------------------------------------
 
     if similar_to_seen(words):
-        num_duplicate_pages += 1
+        num_near_duplicate_pages += 1
         return []
         
     # -------------------------------Getting Page Word Statistics-----------------------------------------
@@ -328,7 +329,7 @@ def is_valid(url):
         print("ValueError for ", parsed)
         return False
     
-    
+
 if __name__ == "__main__":
     pass
 

@@ -55,4 +55,4 @@ if __name__ == "__main__":
         
         f.write("\n\n\n")
         f.write("--------Additional Statistics-------------------\n")
-        f.write("Duplicate pages skipped: " + str(scraper.num_duplicate_pages) + "\n")
+        f.write("Duplicate pages skipp skipped: {scraper.num_near_duplicate_pages}")
