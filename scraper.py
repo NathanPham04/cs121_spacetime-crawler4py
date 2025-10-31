@@ -36,10 +36,6 @@ stopwords = {
 
 # URLs to avoid when crawling
 skip_urls = {
-    "https://cs.ics.uci.edu/accessibility-statement", # Page not found
-    "https://ics.uci.edu/vrst", # Page not found
-    "https://ics.uci.edu/~rjuang", # Page not found
-    "https://ics.uci.edu/~bsajadi", # Page not found
     "https://isg.ics.uci.edu/wp-login.php", # Word-press login page is useless
     "https://grape.ics.uci.edu/wiki/asterix", # Download links
     "https://ics.uci.edu/events/category/student-experience/day", # Calendar trap
@@ -47,14 +43,13 @@ skip_urls = {
     "https://grape.ics.uci.edu/wiki/public/zip-attachment", # Attachment download
     "https://grape.ics.uci.edu/wiki/public/raw-attachment", # Attachment download
     "https://isg.ics.uci.edu/events", # Calendar trap
-    "http://mlphysics.ics.uci.edu/data", # Scientific data in txt files
+    "http://mlphysics.ics.uci.edu/data", # Scientific data in txt files (no real webpage information)
     "http://wics.ics.uci.edu", # Crawler trap
     "https://wics.ics.uci.edu", # Crawler trap
-    "https://grape.ics.uci.edu/wiki/public/wiki", # Crawler trap
-    "https://grape.ics.uci.edu/wiki/public/timeline?", # Crawler trap
-    "https://ngs.ics.uci.edu", # Crawler trap
-    "http://www.ics.uci.edu/~babaks/BWR/Home_files", # Useless pages
-    "https://ics.uci.edu/~dechter/publications", # Useless pages
+    "https://grape.ics.uci.edu/wiki/public/wiki", # Crawler trap (pages require login)
+    "https://grape.ics.uci.edu/wiki/public/timeline?", # Crawler trap (pages require login)
+    "https://ngs.ics.uci.edu", # Crawler trap (Bunch of links that take you to low information pages that don't seem to end)
+    "http://www.ics.uci.edu/~babaks/BWR/Home_files", # Useless no information pages
 }
 
 # Global word frequency map
@@ -77,6 +72,8 @@ websites_as_json = []
 hashed_content = set()
 num_duplicate_pages = 0
 
+MAX_FILE_SIZE_BYTES = 1_000_000 # 1 MB for an html web page file is pretty big according to Google (https://www.greennet.org.uk/support/understanding-file-sizes)
+
 """
 - Make sure to defragment the URLs
 - Use BeautifulSoup to extract links and content
@@ -93,7 +90,7 @@ def extract_next_links(url, resp) -> list["urls"]:
     #         resp.raw_response.content: the content of the page!
     global websites_as_json, longest_page_len, longest_page_url, num_duplicate_pages
 
-    # -------------------------------URL Tracking and Duplicate Detection-----------------------------------------
+    # -------------------------------URL Tracking and Exact Duplicate Detection-----------------------------------------
 
     # Add to the seen set if we haven't parsed the page yet
     if resp.url in pages_seen_set:
@@ -105,7 +102,7 @@ def extract_next_links(url, resp) -> list["urls"]:
     if resp.raw_response is None:
         return []
 
-    # Checking for duplicate sites
+    # Checking for exact duplicate sites
     hashed_site = hash(resp.raw_response.content)
     if hashed_site in hashed_content:
         num_duplicate_pages+= 1
@@ -122,25 +119,38 @@ def extract_next_links(url, resp) -> list["urls"]:
         "error": resp.error,
     }
 
-    # If the response code isn't in the 200s or there is no content return an empty list
-    if resp.status < 200 or resp.status > 299:
+    # If the response code isn't 200 then don't even parse
+    if resp.status != 200:
         website_json["raw_content"] = resp.raw_response.content.decode('utf-8', errors='ignore')
         websites_as_json.append(website_json)
         return []
 
 
-    # -------------------------------Getting Page Word Statistics-----------------------------------------
-
-    # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    hyperlinks = []
+    # -------------------------------Getting Number of Words on Page-----------------------------------------
 
     soup = BeautifulSoup(resp.raw_response.content, "lxml")
 
-    # Scan page text (for word frequency and longest page)
     raw_text = soup.get_text()
     words = re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=»\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text)
 
     page_len = len(words)
+
+    # -------------------------------Stop Crawling on Pages with Low Information---------------------------
+
+    # If there are less than 50 words then there is probably little information on the page so just stop crawling it
+    if page_len < 100:
+        return []
+    
+    # If the file is super large but doesn't have that many words then also don't crawl it since it doesn't have that much information relative to its size
+    if page_len < 300 and len(resp.raw_response.content) > MAX_FILE_SIZE_BYTES:
+        return []
+
+    # --------------------------------Similar/Duplicate Page Check---------------------------------------------
+
+    # TODO RYAN/AIDAN/HANVISH?
+
+    # -------------------------------Getting Page Word Statistics-----------------------------------------
+
     website_json["page_len"] = page_len
     websites_as_json.append(website_json)
 
@@ -160,6 +170,9 @@ def extract_next_links(url, resp) -> list["urls"]:
     subdomain_counts[subdomain]+= 1
 
     # -------------------------------Parse normal web pages and defragment URLs-----------------------------------------
+
+    # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
+    hyperlinks = []
 
     # Extract anchor tags with the href attribute
     for link in soup.find_all('a', href=True):
@@ -188,8 +201,6 @@ def extract_next_links(url, resp) -> list["urls"]:
         # Remove trailing slash for consistency in URL storage
         if full_url.endswith('/'):
             full_url = full_url[:-1]
-
-        # TODO handle get requests with parameters?
 
         hyperlinks.append(full_url)
 
@@ -251,7 +262,7 @@ def is_valid(url):
         if re.match(r"^https?:\/\/(?:www\.)?ics\.uci\.edu\/~eppstein\/pix(?:\/.*)?$", url):
             return False
         
-        # Don't allow the get request download links with format=txt
+        # Don't allow the get request download links with format=txt since it just downloads a txt file to your computer
         if re.search(r"[?&]format=txt", url):
             return False
 
@@ -259,9 +270,9 @@ def is_valid(url):
         if "wp-login" in url:
             return False
         
-        # Disallow a bunch of slides from zivs website
+        # Disallow a bunch of slides from zivs website which are all pdfs
         if re.match(r"^https?://www\.ics\.uci\.edu/~ziv/.*\.htm$", url):
-            return False  # disallow
+            return False 
 
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
