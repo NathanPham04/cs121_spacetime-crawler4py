@@ -44,8 +44,8 @@ skip_urls = {
     "https://grape.ics.uci.edu/wiki/public/raw-attachment", # Attachment download
     "https://isg.ics.uci.edu/events", # Calendar trap
     "http://mlphysics.ics.uci.edu/data", # Scientific data in txt files (no real webpage information)
-    "http://wics.ics.uci.edu", # Crawler trap
-    "https://wics.ics.uci.edu", # Crawler trap
+    # "http://wics.ics.uci.edu", # Crawler trap
+    # "https://wics.ics.uci.edu", # Crawler trap
     "https://grape.ics.uci.edu/wiki/public/wiki", # Crawler trap (pages require login)
     "https://grape.ics.uci.edu/wiki/public/timeline?", # Crawler trap (pages require login)
     "https://ngs.ics.uci.edu", # Crawler trap (Bunch of links that take you to low information pages that don't seem to end)
@@ -114,19 +114,9 @@ def extract_next_links(url, resp) -> list["urls"]:
     
     # -------------------------------Preprocessing Metadata Checks-----------------------------------------
 
-    # Used to store the website data for report in a JSON format
-    website_json = {
-        "url": resp.url,
-        "status": resp.status,
-        "error": resp.error,
-    }
-
     # If the response code isn't 200 then don't even parse
     if resp.status != 200:
-        website_json["raw_content"] = resp.raw_response.content.decode('utf-8', errors='ignore')
-        websites_as_json.append(website_json)
         return []
-
 
     # -------------------------------Getting Number of Words on Page-----------------------------------------
 
@@ -150,14 +140,11 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     # --------------------------------Similar/Duplicate Page Check---------------------------------------------
 
-    if similar_to_seen(words):
-        num_near_duplicate_pages += 1
-        return []
+    # if similar_to_seen(words):
+    #     num_near_duplicate_pages += 1
+    #     return []
         
     # -------------------------------Getting Page Word Statistics-----------------------------------------
-
-    website_json["page_len"] = page_len
-    websites_as_json.append(website_json)
 
     # Check for longest page
     if page_len > longest_page_len or not longest_page_url:
@@ -320,7 +307,7 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz"
-            + r"|mpg|py|h|cp|c|emacs|ppsx|lif|rle|nb|tsv|htm|odc|bib|pps)$", parsed.path.lower())
+            + r"|mpg|py|h|cp|c|emacs|ppsx|lif|rle|nb|tsv|htm|odc|bib|pps|Z|ma)$", parsed.path.lower())
 
     except TypeError:
         print ("TypeError for ", parsed)
