@@ -46,17 +46,19 @@ if __name__ == "__main__":
 
     with open("stats.txt", "w") as f:
         f.write("-------------------Crawler Statistics-------------------\n")
-        f.write("Total pages: " + str(len(scraper.pages_seen_set)) + "\n")
-        f.write("Longest page: " + scraper.longest_page_url + " (" + str(scraper.longest_page_len) + " words)\n")
-        f.write("Most common words: " + str(top_words[:50]) + "\n")
+        f.write(f"Total pages: {str(len(scraper.pages_seen_set))}\n")
+        f.write(f"Longest page: {scraper.longest_page_url} ({str(scraper.longest_page_len)} words)\n")
+        f.write("Most common words:\n")
+        for word, count in top_words[:50]:
+            f.write(f"\t{word}, {str(count)}\n")
         f.write("Subdomains:\n")
         for subdomain, count in subdomain_counts:
-            f.write("\t" + subdomain + ", " + str(count) + "\n")
+            f.write(f"\t{subdomain}, {str(count)}\n")
         
         f.write("\n\n\n")
         f.write("--------Additional Statistics-------------------\n")
-        f.write(f"Duplicate pages skipped: {scraper.num_duplicate_pages}")
-        f.write(f"Near duplicate pages skipped: {scraper.num_near_duplicate_pages}")
+        f.write(f"Exact duplicate pages skipped: {scraper.num_duplicate_pages}\n")
+        f.write(f"Near duplicate pages skipped: {scraper.num_near_duplicate_pages}\n")
 
     with open("top_words.txt", "w") as f:
         f.write(str(top_words))

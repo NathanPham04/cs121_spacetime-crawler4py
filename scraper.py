@@ -134,7 +134,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     raw_text = soup.get_text()
     # cast to lower
-    words = [w.lower() for w in re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=»|\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9]+', raw_text) if w]
+    words = [w.lower() for w in re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=»|\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9\u2014]+', raw_text) if w]
 
     page_len = len(words)
 
@@ -171,7 +171,7 @@ def extract_next_links(url, resp) -> list["urls"]:
         word_frequency_map[word]+= 1
 
     # Update subdomain count
-    subdomain = urlparse(resp.url).hostname
+    subdomain = urlparse(resp.url).hostname.removeprefix("www.")
     subdomain_counts[subdomain]+= 1
 
     # -------------------------------Parse normal web pages and defragment URLs-----------------------------------------
