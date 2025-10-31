@@ -307,7 +307,7 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz"
-            + r"|mpg|py|h|cp|c|emacs|ppsx|lif|rle|nb|tsv|htm|odc|bib|pps|Z|ma)$", parsed.path.lower())
+            + r"|mpg|py|h|cp|c|emacs|ppsx|lif|rle|nb|tsv|htm|odc|bib|pps|Z|ma|txt)$", parsed.path.lower())
 
     except TypeError:
         print ("TypeError for ", parsed)
