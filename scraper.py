@@ -90,7 +90,7 @@ def extract_next_links(url, resp) -> list["urls"]:
     # resp.raw_response: this is where the page actually is. More specifically, the raw_response has two parts:
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
-    global websites_as_json, longest_page_len, longest_page_url, num_duplicate_pages
+    global websites_as_json, longest_page_len, longest_page_url, num_duplicate_pages, num_near_duplicate_pages
 
     # -------------------------------URL Tracking and Exact Duplicate Detection-----------------------------------------
 
@@ -225,7 +225,7 @@ def jaccard_similarity(set1, set2):
         return len(intersection) / len(union)
         
 # https://medium.com/data-science/text-analysis-basics-in-python-443282942ec5
-def similar_to_seen(text: list[str], threshold:int=0.85):
+def similar_to_seen(text: list[str], threshold:float=0.85):
     global hashed_content
 
     # helper for making n-grams
