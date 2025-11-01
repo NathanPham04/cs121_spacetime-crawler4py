@@ -44,11 +44,8 @@ skip_urls = {
     "https://grape.ics.uci.edu/wiki/public/raw-attachment", # Attachment download
     "https://isg.ics.uci.edu/events", # Calendar trap
     "http://mlphysics.ics.uci.edu/data", # Scientific data in txt files (no real webpage information)
-    "http://wics.ics.uci.edu", # Crawler trap
-    "https://wics.ics.uci.edu", # Crawler trap
     "https://grape.ics.uci.edu/wiki/public/wiki", # Crawler trap (pages require login)
     "https://grape.ics.uci.edu/wiki/public/timeline?", # Crawler trap (pages require login)
-    "https://ngs.ics.uci.edu", # Crawler trap (Bunch of links that take you to low information pages that don't seem to end)
     "http://www.ics.uci.edu/~babaks/BWR/Home_files", # Useless no information pages
 }
 
@@ -297,6 +294,14 @@ def is_valid(url):
         # Disallow a bunch of slides from zivs website which are all pdfs
         if re.match(r"^https?://www\.ics\.uci\.edu/~ziv/.*\.htm$", url):
             return False 
+
+        # Disallow social media links and calender and attachment (just a bunch of images) links on the WICs site
+        if "wics.ics.uci.edu" in url and ("?share=twitter" in url or "?share=facebook" in url or "/events" in url or "attachment" in url):
+            return False
+
+        # Disallow ics calendar
+        if "ics.uci.edu/events/" in url:
+            return False
 
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
