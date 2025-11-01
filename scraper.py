@@ -31,7 +31,7 @@ stopwords = {
     "who's", "whom", "why", "why's", "with", "won't", "would", "wouldn't", "you",
     "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves",
     # Added stop words
-    "s", "d", "p", "b", "m"
+    "will", "can", "s", "d", "p", "b", "m", "j", "pp", "n", "e", "t", "o"
 }
 
 # URLs to avoid when crawling
@@ -124,7 +124,7 @@ def extract_next_links(url, resp) -> list["urls"]:
 
     raw_text = soup.get_text()
     # cast to lower
-    words = [w.lower() for w in re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=»|\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9\u2014]+', raw_text) if w]
+    words = [w.lower() for w in re.split(r'[ \t\r\n,.!?;:"(){}\[\]<>/\-&*=»|\\\u2013\u00a0\u2022\ufeff\u201d\u201c\u2018\u00a9\u2014]+', raw_text) if w]
 
     page_len = len(words)
 
