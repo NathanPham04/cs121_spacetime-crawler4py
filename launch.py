@@ -46,7 +46,7 @@ if __name__ == "__main__":
             f.write("Most common words:\n")
             for word, count in top_words[:50]:
                 f.write(f"\t{word}, {str(count)}\n")
-            f.write("Subdomains:\n")
+            f.write(f"Subdomains: {len(subdomain_counts)}\n")
             for subdomain, count in subdomain_counts:
                 f.write(f"\t{subdomain}, {str(count)}\n")
             
@@ -56,4 +56,9 @@ if __name__ == "__main__":
             f.write(f"Near duplicate pages skipped: {scraper.num_near_duplicate_pages}\n")
 
         with open("top_words.txt", "w") as f:
-            f.write(str(top_words))
+            for word, count in top_words:
+                f.write(f"\t{word}, {str(count)}\n")
+
+        with open("unique_urls.txt", "w") as f:
+            for url in sorted(scraper.pages_seen_set):
+                f.write(f"{url}\n")
